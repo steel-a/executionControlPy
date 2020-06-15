@@ -1,0 +1,3 @@
+from executionControlPy.tests.test_execControl import test_execControl
+
+test_execControl()
