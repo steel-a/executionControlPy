@@ -134,7 +134,7 @@ class ExecutionControlTest:
         `triesWithError` tinyint(4) DEFAULT NULL,
         `maxTriesWithError` tinyint(4) DEFAULT NULL,
         `minsAfterMaxTries` tinyint(4) DEFAULT NULL,
-        `error` varchar(1000) DEFAULT NULL,
+        `error` varchar(5000) DEFAULT NULL,
         `numHardRegisters` int(11) DEFAULT NULL,
         `numHardRegistersLast` int(11) DEFAULT NULL,
         `numSoftRegisters` int(11) DEFAULT NULL,
