@@ -140,16 +140,18 @@ class ExecutionControl:
         return False
 
 
-    def start(self):
-        dt = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    def start(self, executionTime:str=None):
+        if executionTime is None:
+            executionTime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
         if self.db.exec(f"""
             update {self.table} set
                 statusLastExecution = 'P'
-            ,   timeLastExecution = '{dt}'
+            ,   timeLastExecution = '{executionTime}'
             where statusLastExecution != 'P' and id = {self.id}
             """) > 0:
             self.statusLastExecution = 'P'
-            self.timeLastExecution = dt
+            self.timeLastExecution = executionTime
             return True
         return False
 
@@ -164,6 +166,7 @@ class ExecutionControl:
         mysql = f"""
             update {self.table}
             set statusLastExecution = '{self.statusLastExecution}'
+            ,   dateLastSuccess = '{self.timeLastExecution}'
             ,   triesWithError = {self.triesWithError}
             ,   error = ''
             ,   numHardRegisters = {self.numHardRegisters}
