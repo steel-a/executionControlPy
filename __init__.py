@@ -114,6 +114,7 @@ class ExecutionControl:
             
 
             self.id = dic['id']
+            self.name = dic['name']
             self.processName = dic['processName']
             self.processParam = dic['processParam']
             self.idUser = dic['idUser']

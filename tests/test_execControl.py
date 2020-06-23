@@ -11,6 +11,7 @@ class ExecutionControlTest:
 
 
     def _createNewRegister(self, processName:str, processParam:str, idUser:int):
+        self.name = 'null'
         self.processName = processName
         self.processParam = processParam
         self.idUser = idUser
@@ -36,6 +37,7 @@ class ExecutionControlTest:
         mysql = f"""
             INSERT INTO {self.table}
             (
+            `name`,
             `processName`,
             `processParam`,
             `idUser`,
@@ -60,6 +62,7 @@ class ExecutionControlTest:
             )
             VALUES
             (
+            {f(self.name)},
             {f(self.processName)},
             {f(self.processParam)},
             {f(self.idUser)},
@@ -93,6 +96,7 @@ class ExecutionControlTest:
 
     def _createTableCtrl(self):
         # Necessary table: getWebDataCtl
+        # name (str 50): Name to identify the process
         # ProcessName (str 50): Process Name
         # ProcessParam (str 30): Process Param
         # Periodicity (str 1) D (diary), W (weekly), M (monthly),
@@ -119,6 +123,7 @@ class ExecutionControlTest:
         mysql =f"""
         CREATE TABLE IF NOT EXISTS {self.table} (
         `id` int(11) NOT NULL AUTO_INCREMENT,
+        `name` varchar(50) DEFAULT NULL,
         `processName` varchar(50) DEFAULT NULL,
         `processParam` varchar(30) DEFAULT NULL,
         `idUser` int NOT NULL,
