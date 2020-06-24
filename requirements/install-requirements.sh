@@ -13,3 +13,4 @@ installPackage(){
 }
 
 installPackage dbpy
+python3 ~/apps/packages/executionControlPy/requirements/createDbObjects.py
