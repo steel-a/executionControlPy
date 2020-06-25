@@ -68,7 +68,7 @@ def createNewRegisterIfNE(db, table:str, processName:str, processParam:str, idUs
         select count(1)
           from {table}
          where processName = {f(processName)}
-           and processParam = {f(processName)}
+           and processParam = {f(processParam)}
            and idUser = {f(idUser)}
         """)
     if num>0:
