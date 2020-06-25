@@ -64,10 +64,16 @@ def createTableCtrl(db, table:str):
 
 
 if __name__ == '__main__':
+    from dbpy.tests.connStringCfg import getConnStr
     import re
-    r = re.findall(r'[ \t]*(connectionString)[ \t]*=[ \t]*([a-zA-Z0-9-+*\/=?!@#$%&()_{}\[\]<>:;,.~^`"\' ]*)[ \t]*',open('./files/config/environment.ini','r').read())
+    # try to get the first connectionString* from ./files/config/environment.ini
+    try:
+        r = re.findall(r'[ \t]*(connectionString)[a-zA-Z0-9 \t]*=[ \t]*([a-zA-Z0-9-+*\/=?!@#$%&()_{}\[\]<>:;,.~^`"\' ]*)[ \t]*',open('./files/config/environment.ini','r').read())
+        connString = r[0][1]
+    # If its not possible to get connectionString from file, get from dbpy test scripts
+    except:
+        connString = getConnStr()
 
-    connString = r[0][1]
     db = database.DB(connString)
     
     createTableCtrl(db,'control')
