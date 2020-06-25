@@ -62,6 +62,100 @@ def createTableCtrl(db, table:str):
     """
     db.exec(mysql)
 
+def createNewRegisterIfNE(db, table:str, processName:str, processParam:str, idUser:int):
+
+    num = db.getValue(f"""
+        select count(1)
+          from {table}
+         where processName = {f(processName)}
+           and processParam = {f(processName)}
+           and idUser = {f(idUser)}
+        """)
+    if num>0:
+        return
+
+    name = 'null'
+    processName = processName
+    processParam = processParam
+    idUser = idUser
+    periodicity = 'D'
+    day = 'null'
+    hourStart = '06:00'
+    hourStart2 = 'null'
+    hourEnd = '24:00'
+    repeatMinutes = 0
+    dateLastSuccess = '2000-01-01 00:00:01'
+    statusLastExecution = 'E'
+    timeLastExecution = '2000-01-01 00:00:01'
+    triesWithError = 0
+    maxTriesWithError = 3
+    minsAfterMaxTries = 5
+    error = 'null'
+    numHardRegisters = 0
+    numHardRegistersLast = 0
+    numSoftRegisters = 0
+    preRequisites = 'null'
+    fk = 'null'
+
+    mysql = f"""
+        INSERT INTO {table}
+        (
+        `name`,
+        `processName`,
+        `processParam`,
+        `idUser`,
+        `periodicity`,
+        `day`,
+        `hourStart`,
+        `hourStart2`,
+        `hourEnd`,
+        `repeatMinutes`,
+        `dateLastSuccess`,
+        `statusLastExecution`,
+        `timeLastExecution`,
+        `triesWithError`,
+        `maxTriesWithError`,
+        `minsAfterMaxTries`,
+        `error`,
+        `numHardRegisters`,
+        `numHardRegistersLast`,
+        `numSoftRegisters`,
+        `preRequisites`,
+        `fk`
+        )
+        VALUES
+        (
+        {f(name)},
+        {f(processName)},
+        {f(processParam)},
+        {f(idUser)},
+        {f(periodicity)},
+        {f(day)},
+        {f(hourStart)},
+        {f(hourStart2)},
+        {f(hourEnd)},
+        {f(repeatMinutes)},
+        {f(dateLastSuccess)},
+        {f(statusLastExecution)},
+        {f(timeLastExecution)},
+        {f(triesWithError)},
+        {f(maxTriesWithError)},
+        {f(minsAfterMaxTries)},
+        {f(error)},
+        {f(numHardRegisters)},
+        {f(numHardRegistersLast)},
+        {f(numSoftRegisters)},
+        {f(preRequisites)},
+        {f(fk)}
+        );
+        """.replace('\n','')
+
+    db.exec(mysql)
+
+def dropTableCtrl(db, table:str):
+    db.exec(f"drop table if exists {table}")
+
+
 
 if __name__ == '__main__':
     from dbpy.tests.connStringCfg import getConnStr
