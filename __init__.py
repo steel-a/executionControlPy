@@ -113,7 +113,7 @@ class ExecutionControl:
             update {self.table} set
                 statusLastExecution = 'P'
             ,   timeLastExecution = '{executionTime}'
-            where statusLastExecution != 'P' and id = {self.id}
+            where id = {self.id}
             """) > 0:
             self.statusLastExecution = 'P'
             self.timeLastExecution = executionTime
