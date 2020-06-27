@@ -29,27 +29,27 @@ def createTableCtrl(db, table:str):
 
     mysql =f"""
     CREATE TABLE IF NOT EXISTS {table} (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` varchar(50) DEFAULT NULL,
     `processName` varchar(50) DEFAULT NULL,
     `processParam` varchar(30) DEFAULT NULL,
-    `idUser` int NOT NULL,
+    `idUser` SMALLINT UNSIGNED NOT NULL,
     `periodicity` char(1) NOT NULL,
-    `day` tinyint(4) DEFAULT NULL,
+    `day` SMALLINT unsigned DEFAULT NULL,
     `hourStart` char(5) NOT NULL,
     `hourStart2` char(5),
     `hourEnd` char(5) NOT NULL,
-    `repeatMinutes` tinyint(4) DEFAULT NULL,
+    `repeatMinutes` SMALLINT unsigned DEFAULT NULL,
     `dateLastSuccess` datetime DEFAULT NULL,
     `statusLastExecution` char(1) DEFAULT NULL,
     `timeLastExecution` datetime DEFAULT NULL,
-    `triesWithError` tinyint(4) DEFAULT NULL,
-    `maxTriesWithError` tinyint(4) DEFAULT NULL,
-    `minsAfterMaxTries` tinyint(4) DEFAULT NULL,
+    `triesWithError` TINYINT unsigned DEFAULT NULL,
+    `maxTriesWithError` TINYINT unsigned DEFAULT NULL,
+    `minsAfterMaxTries` TINYINT unsigned DEFAULT NULL,
     `error` varchar(5000) DEFAULT NULL,
-    `numHardRegisters` int(11) DEFAULT NULL,
-    `numHardRegistersLast` int(11) DEFAULT NULL,
-    `numSoftRegisters` int(11) DEFAULT NULL,
+    `numHardRegisters` SMALLINT unsigned DEFAULT NULL,
+    `numHardRegistersLast` SMALLINT unsigned DEFAULT NULL,
+    `numSoftRegisters` SMALLINT unsigned DEFAULT NULL,
     `preRequisites` varchar(50) DEFAULT NULL,
     `fk` varchar(50) DEFAULT NULL,
     PRIMARY KEY (`id`),
@@ -58,7 +58,7 @@ def createTableCtrl(db, table:str):
                                             ,`idUser`
                                             ,`periodicity`
                                             ,`day`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     """
     db.exec(mysql)
 
