@@ -58,7 +58,7 @@ def createTableCtrl(db, table:str):
                                             ,`idUser`
                                             ,`periodicity`
                                             ,`day`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
     """
     db.exec(mysql)
 
