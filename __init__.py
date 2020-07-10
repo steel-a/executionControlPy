@@ -29,7 +29,7 @@ class ExecutionControl:
             self.endError(value)
 
 
-    def getProcessToExec(self, processName:str=None) -> bool:
+    def getProcessToExec(self, processName:str=None, processParam:str=None) -> bool:
         """
         -> loads a candidate to be executed and try to start.
             If it can't start, it will load another process.
@@ -68,44 +68,67 @@ class ExecutionControl:
                     and (triesWithError < maxTriesWithError or timestampdiff(MINUTE,timeLastExecution,now())>minsAfterMaxTries)
                     LIMIT 1
                 """
+            dic = self.db.getRow(queryCandidate)
+            if dic is None:
+                return False
+            
+
+            self.id = dic['id']
+            self.name = dic['name']
+            self.processName = dic['processName']
+            self.processParam = dic['processParam']
+            self.idUser = dic['idUser']
+            self.periodicity = dic['periodicity']
+            self.day = dic['day']
+            self.hourStart = dic['hourStart']
+            self.hourStart2 = dic['hourStart2']
+            self.hourEnd = dic['hourEnd']
+            self.repeatMinutes = dic['repeatMinutes']
+            self.dateLastSuccess = dic['dateLastSuccess']
+            self.statusLastExecution = dic['statusLastExecution']
+            self.timeLastExecution = dic['timeLastExecution']
+            self.triesWithError = dic['triesWithError']
+            self.maxTriesWithError = dic['maxTriesWithError']
+            self.minsAfterMaxTries = dic['minsAfterMaxTries']
+            self.error = dic['error']
+            self.numHardRegisters = dic['numHardRegisters']
+            self.numHardRegistersLast = dic['numHardRegistersLast']
+            self.numSoftRegisters = dic['numSoftRegisters']
+            self.fk = dic['fk']
+
         else:
-            queryCandidate = f"""
-                select * from {self.table} where processName = '{processName}'
-                """
+            self.id = 0
+            self.name = ''
+            self.processName = processName
+            self.processParam = processParam
+            self.idUser = 1
+            self.periodicity = 'D'
+            self.day = 0
+            self.hourStart = '00:00'
+            self.hourStart2 = None
+            self.hourEnd = '24:00'
+            self.repeatMinutes = 0
+            #elf.dateLastSuccess = '2020-01-01 00:00:01'
+            self.statusLastExecution = 'E'
+            #self.timeLastExecution = '2020-01-01 00:00:01'
+            self.triesWithError = 0
+            self.maxTriesWithError = 3
+            self.minsAfterMaxTries = 0
+            self.error = ''
+            self.numHardRegisters = 0
+            self.numHardRegistersLast = 0
+            self.numSoftRegisters = 0
+            self.fk = ''
 
 
-        dic = self.db.getRow(queryCandidate)
-        if dic is None:
-            return False
-        
 
-        self.id = dic['id']
-        self.name = dic['name']
-        self.processName = dic['processName']
-        self.processParam = dic['processParam']
-        self.idUser = dic['idUser']
-        self.periodicity = dic['periodicity']
-        self.day = dic['day']
-        self.hourStart = dic['hourStart']
-        self.hourStart2 = dic['hourStart2']
-        self.hourEnd = dic['hourEnd']
-        self.repeatMinutes = dic['repeatMinutes']
-        self.dateLastSuccess = dic['dateLastSuccess']
-        self.statusLastExecution = dic['statusLastExecution']
-        self.timeLastExecution = dic['timeLastExecution']
-        self.triesWithError = dic['triesWithError']
-        self.maxTriesWithError = dic['maxTriesWithError']
-        self.minsAfterMaxTries = dic['minsAfterMaxTries']
-        self.error = dic['error']
-        self.numHardRegisters = dic['numHardRegisters']
-        self.numHardRegistersLast = dic['numHardRegistersLast']
-        self.numSoftRegisters = dic['numSoftRegisters']
-        self.fk = dic['fk']
 
         return True
 
 
     def start(self, executionTime:str=None):
+        if self.id==0: return True
+
         if executionTime is None:
             executionTime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
@@ -122,6 +145,9 @@ class ExecutionControl:
 
 
     def endSuccess(self, numHardRegisters:int=0, numSoftRegisters:int=0):
+        if self.id==0:
+            return True
+
         self.statusLastExecution = 'S'
         self.triesWithError = 0
         self.error = ''
