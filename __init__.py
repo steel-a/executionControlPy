@@ -66,35 +66,47 @@ class ExecutionControl:
                     )
                     # Max retries
                     and (triesWithError < maxTriesWithError or timestampdiff(MINUTE,timeLastExecution,now())>minsAfterMaxTries)
+                    order by idUser, preRequisites
                     LIMIT 1
                 """
-            dic = self.db.getRow(queryCandidate)
-            if dic is None:
-                return False
-            
 
-            self.id = dic['id']
-            self.name = dic['name']
-            self.processName = dic['processName']
-            self.processParam = dic['processParam']
-            self.idUser = dic['idUser']
-            self.periodicity = dic['periodicity']
-            self.day = dic['day']
-            self.hourStart = dic['hourStart']
-            self.hourStart2 = dic['hourStart2']
-            self.hourEnd = dic['hourEnd']
-            self.repeatMinutes = dic['repeatMinutes']
-            self.dateLastSuccess = dic['dateLastSuccess']
-            self.statusLastExecution = dic['statusLastExecution']
-            self.timeLastExecution = dic['timeLastExecution']
-            self.triesWithError = dic['triesWithError']
-            self.maxTriesWithError = dic['maxTriesWithError']
-            self.minsAfterMaxTries = dic['minsAfterMaxTries']
-            self.error = dic['error']
-            self.numHardRegisters = dic['numHardRegisters']
-            self.numHardRegistersLast = dic['numHardRegistersLast']
-            self.numSoftRegisters = dic['numSoftRegisters']
-            self.fk = dic['fk']
+            for dic in self.db.getListRows(queryCandidate):
+                
+                preReqsAttended = True
+                self.preRequisites = dic['preRequisites']
+                if self.preRequisites!=None and self.preRequisites!='':
+                    executedProcesses = ';'+self.db.getValuesSeparatedBy("SELECT ifnull(concat(fk,'-',idUser),ifnull(name,id)) FROM control where statusLastExecution = 'S' and dateLastSuccess>curdate();",';')+';'
+                    for pre in self.preRequisites.split(';'):
+                        if ';'+pre+';' not in executedProcesses:
+                            preReqsAttended = False
+                            break
+                if not preReqsAttended: continue
+
+                self.id = dic['id']
+                self.name = dic['name']
+                self.processName = dic['processName']
+                self.processParam = dic['processParam']
+                self.idUser = dic['idUser']
+                self.periodicity = dic['periodicity']
+                self.day = dic['day']
+                self.hourStart = dic['hourStart']
+                self.hourStart2 = dic['hourStart2']
+                self.hourEnd = dic['hourEnd']
+                self.repeatMinutes = dic['repeatMinutes']
+                self.dateLastSuccess = dic['dateLastSuccess']
+                self.statusLastExecution = dic['statusLastExecution']
+                self.timeLastExecution = dic['timeLastExecution']
+                self.triesWithError = dic['triesWithError']
+                self.maxTriesWithError = dic['maxTriesWithError']
+                self.minsAfterMaxTries = dic['minsAfterMaxTries']
+                self.error = dic['error']
+                self.numHardRegisters = dic['numHardRegisters']
+                self.numHardRegistersLast = dic['numHardRegistersLast']
+                self.numSoftRegisters = dic['numSoftRegisters']
+                self.fk = dic['fk']
+
+                return True
+            return False
 
         else:
             self.id = 0
@@ -120,10 +132,7 @@ class ExecutionControl:
             self.numSoftRegisters = 0
             self.fk = ''
 
-
-
-
-        return True
+            return True
 
 
     def start(self, executionTime:str=None):
@@ -182,9 +191,6 @@ class ExecutionControl:
             set statusLastExecution = '{self.statusLastExecution}'
             ,   triesWithError = {self.triesWithError}
             ,   error = '{self.error}'
-            ,   numHardRegisters = {self.numHardRegisters}
-            ,   numSoftRegisters = {self.numSoftRegisters}
-            ,   numHardRegistersLast = {self.numHardRegistersLast}
             where id = {self.id}
             """
         self.db.reconnect()
