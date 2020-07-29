@@ -152,7 +152,7 @@ class ExecutionControl:
         return False
 
 
-    def endSuccess(self, numHardRegisters:int=0, numSoftRegisters:int=0):
+    def endSuccess(self, numHardRegisters:int=0, numSoftRegisters:int=0, message:str=''):
         if self.id==0:
             return True
 
@@ -167,7 +167,7 @@ class ExecutionControl:
             set statusLastExecution = '{self.statusLastExecution}'
             ,   dateLastSuccess = '{self.timeLastExecution}'
             ,   triesWithError = {self.triesWithError}
-            ,   error = ''
+            ,   error = '{message}'
             ,   numHardRegisters = {self.numHardRegisters}
             ,   numSoftRegisters = {self.numSoftRegisters}
             ,   numHardRegistersLast = {self.numHardRegistersLast}
