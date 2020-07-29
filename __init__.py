@@ -66,7 +66,7 @@ class ExecutionControl:
                     )
                     # Max retries
                     and (triesWithError < maxTriesWithError or timestampdiff(MINUTE,timeLastExecution,now())>minsAfterMaxTries)
-                    order by idUser, preRequisites
+                    order by hourStart, idUser, preRequisites, id
                 """
 
             for dic in self.db.getListRows(queryCandidate):
