@@ -35,7 +35,7 @@ def createTableCtrl(db, table:str):
     `processParam` varchar(30) DEFAULT NULL,
     `idUser` SMALLINT UNSIGNED NOT NULL,
     `periodicity` char(1) NOT NULL,
-    `day` SMALLINT unsigned DEFAULT NULL,
+    `day` SMALLINT DEFAULT NULL,
     `hourStart` char(5) NOT NULL,
     `hourStart2` char(5),
     `hourEnd` char(5) NOT NULL,
